@@ -17,11 +17,19 @@ const getList = async() => {
   }
 }
 
-const createNew = async(reqBody) => {
+const createNew = async(req) => {
   try {
-    const newProduct = {
-      ...reqBody,
-      slug: slugify(reqBody.name) + '-' + createRandomString(20)
+    let newProduct = req.body
+    const slug = slugify(req.body.name) + '-' + createRandomString(20)
+
+    let listFile = []
+    req.files.forEach(file => {
+      listFile.push(file.path.split('\\')[1])
+    })
+    newProduct = {
+      ...newProduct,
+      slug: slug,
+      images: listFile
     }
 
     const createdProduct = await productModel.createNew(newProduct)
@@ -58,9 +66,18 @@ const update = async(productId, reqBody) => {
   }
 }
 
+const deleteProduct = async(productId) => {
+  try {
+    return await productModel.deleteProduct(productId)
+  } catch (error) {
+    throw new ApiError(StatusCodes.BAD_GATEWAY, error)
+  }
+}
+
 export const productService = {
   getList,
   createNew,
   getDetails,
-  update
+  update,
+  deleteProduct
 }

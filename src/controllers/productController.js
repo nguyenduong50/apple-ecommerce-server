@@ -12,7 +12,7 @@ const getList = async(req, res, next) => {
 
 const createNew = async(req, res, next) => {
   try {
-    const createNewProduct = await productService.createNew(req.body)
+    const createNewProduct = await productService.createNew(req)
     res.status(StatusCodes.CREATED).json(createNewProduct)
   } catch (error) {
     next(error)
@@ -39,9 +39,21 @@ const update = async(req, res, next) => {
   }
 }
 
+const deleteProduct = async(req, res, next) => {
+  try {
+    const productId = req.params.id
+    await productService.deleteProduct(productId)
+
+    res.status(StatusCodes.OK).json({ message: 'Delete successfully!' })
+  } catch (error) {
+    next(error)
+  }
+}
+
 export const productController = {
   getList,
   createNew,
   getDetails,
-  update
+  update,
+  deleteProduct
 }

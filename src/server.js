@@ -16,6 +16,9 @@ const START_SERVER = () => {
   //Enable request body json data
   app.use(express.json())
 
+  //Static file
+  app.use(express.static('public'))
+
   //Router V1
   app.use('/v1', APIs_V1)
 

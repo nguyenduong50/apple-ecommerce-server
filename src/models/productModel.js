@@ -4,15 +4,17 @@ import { GET_DATABASE } from '~/config/mongodb'
 
 const PRODUCT_COLLECTION_NAME = 'products'
 const PRODUCT_COLLECTION_SCHEMA = Joi.object({
-  name: Joi.string().required().min(5).max(50).trim().strict().messages({
+  name: Joi.string().required().min(1).max(50).trim().strict().messages({
     'any.required': 'Title must required!',
     'string.empty': 'Title must not empty'
   }),
   slug: Joi.string().required().trim().strict(),
-  category: Joi.array().items(Joi.string()).min(1).required(),
-  shortDescription: Joi.string().required().min(5).max(100).trim().strict().required(),
-  longDescription: Joi.string().required().min(5).max(500).trim().strict().required(),
-  images: Joi.array().items(Joi.string()).max(5).required(),
+  category: Joi.string().min(1).max(50).trim().strict().required(),
+  price: Joi.number().min(1).required(),
+  quantity: Joi.number().min(1).required(),
+  shortDescription: Joi.string().required().min(5).max(1000).trim().strict().required(),
+  longDescription: Joi.string().required().min(5).max(2000).trim().strict().required(),
+  images: Joi.array().items(Joi.string()).max(10).required(),
   createdAt: Joi.date().timestamp('javascript').default(Date.now),
   updatedAt: Joi.date().timestamp('javascript').default(null),
   _deleted: Joi.boolean().default(false)
@@ -29,7 +31,7 @@ const getList = async() => {
 }
 
 const validateBeforeCreate = async(data) => {
-  return await PRODUCT_COLLECTION_SCHEMA.validateAsync(data, { abortEarly: false })
+  return await PRODUCT_COLLECTION_SCHEMA.validateAsync(data, { abortEarly: false, allowUnknown: true })
 }
 
 const createNew = async(data) => {
@@ -51,7 +53,7 @@ const findOneById = async(productId) => {
 
 const getDetails = async(productId) => {
   try {
-    return await GET_DATABASE().collection(PRODUCT_COLLECTION_NAME).findOne({ _id: productId, _deleted: false })
+    return await GET_DATABASE().collection(PRODUCT_COLLECTION_NAME).findOne({ _id: new ObjectId(productId) })
   } catch (error) {
     throw new Error(error)
   }
@@ -82,10 +84,20 @@ const update = async(productId, updatedProduct) => {
   }
 }
 
+const deleteProduct = async(productId) => {
+  try {
+    await GET_DATABASE().collection(PRODUCT_COLLECTION_NAME).deleteOne({ _id: new ObjectId(productId) })
+    return
+  } catch (error) {
+    throw new Error(error)
+  }
+}
+
 export const productModel = {
   getList,
   createNew,
   findOneById,
   getDetails,
-  update
+  update,
+  deleteProduct
 }

@@ -1,6 +1,15 @@
 import { StatusCodes } from 'http-status-codes'
 import { userService } from '~/services/userService'
 
+const getList = async(req, res, next) => {
+  try {
+    const products = await userService.getList()
+    res.status(StatusCodes.OK).json(products)
+  } catch (error) {
+    next(error)
+  }
+}
+
 const createNew = async(req, res, next) => {
   try {
     const createNewUser = await userService.createNew(req.body)
@@ -22,6 +31,7 @@ const update = async(req, res, next) => {
 }
 
 export const userController = {
+  getList,
   createNew,
   update
 }
