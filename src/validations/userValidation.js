@@ -20,7 +20,7 @@ const createNew = async(req, res, next) => {
   })
 
   try {
-    //Validate Email unique
+    //Validate Username unique
     const userEmail = await userModel.findOneByEmail(req.body.email)
     if (userEmail) {
       return next(new ApiError(StatusCodes.UNPROCESSABLE_ENTITY, 'ValidationError: Email unique'))

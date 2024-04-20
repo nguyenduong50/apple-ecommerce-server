@@ -3,8 +3,8 @@ import { userService } from '~/services/userService'
 
 const getList = async(req, res, next) => {
   try {
-    const products = await userService.getList()
-    res.status(StatusCodes.OK).json(products)
+    const users = await userService.getList()
+    res.status(StatusCodes.OK).json(users)
   } catch (error) {
     next(error)
   }

@@ -9,9 +9,10 @@ import { APIs_V1 } from './routes/v1'
 import { APIs_V2 } from './routes/v2'
 import { errorHandlingMiddleware } from './middlewares/errorHandlingMiddleware'
 import session from 'express-session'
-import { default as connectMongoDBSession} from 'connect-mongodb-session'
+import { default as connectMongoDBSession } from 'connect-mongodb-session'
 import csrf from 'csurf'
 import cookieParser from 'cookie-parser'
+import bcrypt from 'bcrypt'
 
 const MongoDBStore = connectMongoDBSession(session)
 const store = new MongoDBStore({
@@ -20,7 +21,7 @@ const store = new MongoDBStore({
 })
 const csrfProtection = csrf()
 
-const START_SERVER = () => {
+const START_SERVER = async() => {
   const app = express()
 
   //Enable request body json data

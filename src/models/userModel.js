@@ -34,7 +34,8 @@ const createNew = async(data) => {
   try {
     const validData = await validateBeforeCreate(data)
     delete validData.repeat_password
-    validData.password = bcrypt.hash(validData.password, 20)
+    const passwordHash = await bcrypt.hash(validData.password, 20)
+    validData.password = passwordHash
 
     return await GET_DATABASE().collection(USER_COLLECTION_NAME).insertOne(validData)
   } catch (error) {
