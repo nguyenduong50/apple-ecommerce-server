@@ -8,9 +8,6 @@ Router.route('/login')
   .post(authValidation.login, authController.login)
 
 Router.route('/logout')
-  .get((req, res) => {
-    req.session.destroy()
-    return res.send({})
-  })
+  .get(authController.logout)
 
 export const authRoute = Router

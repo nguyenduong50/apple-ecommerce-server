@@ -14,6 +14,12 @@ const login = async(req, res, next) => {
   }
 }
 
+const logout = (req, res) => {
+  req.session.destroy()
+  res.send()
+}
+
 export const authController = {
-  login
+  login,
+  logout
 }

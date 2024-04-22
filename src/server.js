@@ -12,7 +12,6 @@ import session from 'express-session'
 import { default as connectMongoDBSession } from 'connect-mongodb-session'
 import csrf from 'csurf'
 import cookieParser from 'cookie-parser'
-import bcrypt from 'bcrypt'
 
 const MongoDBStore = connectMongoDBSession(session)
 const store = new MongoDBStore({

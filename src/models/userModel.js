@@ -1,5 +1,5 @@
 import Joi from 'joi'
-import bcrypt from 'bcrypt'
+import bcrypt from 'bcryptjs'
 import { ObjectId } from 'mongodb'
 import { GET_DATABASE } from '~/config/mongodb'
 import { ROLE } from '~/utils/constants'
@@ -34,7 +34,7 @@ const createNew = async(data) => {
   try {
     const validData = await validateBeforeCreate(data)
     delete validData.repeat_password
-    const passwordHash = await bcrypt.hash(validData.password, 20)
+    const passwordHash = await bcrypt.hash(validData.password, 10)
     validData.password = passwordHash
 
     return await GET_DATABASE().collection(USER_COLLECTION_NAME).insertOne(validData)

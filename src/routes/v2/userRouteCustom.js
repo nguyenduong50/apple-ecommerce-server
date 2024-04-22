@@ -2,7 +2,7 @@ import express from 'express'
 import { StatusCodes } from 'http-status-codes'
 import ApiError from '~/utils/ApiError'
 import jwt from 'jsonwebtoken'
-import { hash, compare } from 'bcrypt'
+import { hash, compare } from 'bcryptjs'
 import { GET_DATABASE } from '~/config/mongodb'
 
 const Router = express.Router()
