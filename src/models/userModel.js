@@ -11,6 +11,7 @@ const USER_COLLECTION_SCHEMA = Joi.object({
   password: Joi.string().pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')).required(),
   repeat_password: Joi.ref('password'),
   role: Joi.string().valid(ROLE.ADMIN, ROLE.SALE, ROLE.CUSTOMER).default(ROLE.CUSTOMER),
+  phone: Joi.string().required().min(5).max(11).trim().strict(),
   createdAt: Joi.date().timestamp('javascript').default(Date.now),
   updatedAt: Joi.date().timestamp('javascript').default(null),
   _deleted: Joi.boolean().default(false)
@@ -38,6 +39,17 @@ const createNew = async(data) => {
     validData.password = passwordHash
 
     return await GET_DATABASE().collection(USER_COLLECTION_NAME).insertOne(validData)
+  } catch (error) {
+    throw new Error(error)
+  }
+}
+
+const createNewCustomer = async(data) => {
+  try {
+    const passwordHash = await bcrypt.hash(data.password, 10)
+    data.password = passwordHash
+
+    return await GET_DATABASE().collection(USER_COLLECTION_NAME).insertOne(data)
   } catch (error) {
     throw new Error(error)
   }
@@ -90,6 +102,7 @@ const update = async(userId, updatedUser) => {
 export const userModel = {
   getList,
   createNew,
+  createNewCustomer,
   findOneById,
   findOneByEmail,
   update

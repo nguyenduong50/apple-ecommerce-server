@@ -53,6 +53,22 @@ const getDetails = async(id) => {
   }
 }
 
+const getDetailsBySlug = async(slug) => {
+  try {
+    const product = await productModel.getDetailsBySlug(slug)
+    if (!product) {
+      throw new ApiError(StatusCodes.NOT_FOUND, 'Product not found!')
+    }
+
+    const products = await productModel.getList() ?? []
+    const productRelated = products.filter(productRelate => productRelate.slug !== slug && productRelate.category === product.category) ?? []
+
+    return { product, productRelated }
+  } catch (error) {
+    throw new ApiError(StatusCodes.BAD_GATEWAY, error)
+  }
+}
+
 const update = async(productId, reqBody) => {
   try {
     const updateData = {
@@ -78,6 +94,7 @@ export const productService = {
   getList,
   createNew,
   getDetails,
+  getDetailsBySlug,
   update,
   deleteProduct
 }

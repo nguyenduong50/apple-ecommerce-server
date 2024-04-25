@@ -59,6 +59,14 @@ const getDetails = async(productId) => {
   }
 }
 
+const getDetailsBySlug = async(slug) => {
+  try {
+    return await GET_DATABASE().collection(PRODUCT_COLLECTION_NAME).findOne({ slug: slug })
+  } catch (error) {
+    throw new Error(error)
+  }
+}
+
 const update = async(productId, updatedProduct) => {
   try {
     Object.keys(updatedProduct).forEach(fieldName => {
@@ -98,6 +106,7 @@ export const productModel = {
   createNew,
   findOneById,
   getDetails,
+  getDetailsBySlug,
   update,
   deleteProduct
 }

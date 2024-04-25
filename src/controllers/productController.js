@@ -28,6 +28,15 @@ const getDetails = async(req, res, next) => {
   }
 }
 
+const getDetailsBySlug = async(req, res, next) => {
+  try {
+    const product = await productService.getDetailsBySlug(req.params.slug)
+    res.status(StatusCodes.OK).json(product)
+  } catch (error) {
+    next(error)
+  }
+}
+
 const update = async(req, res, next) => {
   try {
     const productId = req.params.id
@@ -54,6 +63,7 @@ export const productController = {
   getList,
   createNew,
   getDetails,
+  getDetailsBySlug,
   update,
   deleteProduct
 }
