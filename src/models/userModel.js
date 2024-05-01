@@ -27,6 +27,14 @@ const getList = async() => {
   }
 }
 
+const getListUserCustomer = async() => {
+  try {
+    return await GET_DATABASE().collection(USER_COLLECTION_NAME).find({ role: 'customer' }).toArray()
+  } catch (error) {
+    throw new Error(error)
+  }
+}
+
 const validateBeforeCreate = async(data) => {
   return await USER_COLLECTION_SCHEMA.validateAsync(data, { abortEarly: false })
 }
@@ -101,6 +109,7 @@ const update = async(userId, updatedUser) => {
 
 export const userModel = {
   getList,
+  getListUserCustomer,
   createNew,
   createNewCustomer,
   findOneById,

@@ -4,6 +4,7 @@ import { orderModel } from '~/models/orderModel'
 import { sendEmail } from '~/utils/sendEmail'
 import { GET_DATABASE } from '~/config/mongodb'
 import { userModel } from '~/models/userModel'
+import { productModel } from '~/models/productModel'
 
 const getList = async() => {
   try {
@@ -55,6 +56,17 @@ const createNew = async(reqBody) => {
     const createdOrder = await orderModel.createNew(order)
     const getNewOrder = await orderModel.findOneById(createdOrder.insertedId)
     sendEmail(getNewOrder)
+
+    //Calculator quantity product
+    reqBody.productOrder.forEach(async(item) => {
+      const product = await productModel.findOneById(item.id)
+      const updateProduct = {
+        ...product,
+        quantity: product.quantity - item.amount
+      }
+      await productModel.update(item.id, updateProduct)
+    })
+
     return getNewOrder
   } catch (error) {
     throw new ApiError(StatusCodes.BAD_GATEWAY, error)

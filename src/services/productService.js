@@ -28,6 +28,7 @@ const createNew = async(req) => {
     })
     newProduct = {
       ...newProduct,
+      quantity: Number(newProduct.quantity),
       slug: slug,
       images: listFile
     }
@@ -73,6 +74,7 @@ const update = async(productId, reqBody) => {
   try {
     const updateData = {
       ...reqBody,
+      quantity: Number(reqBody.quantity),
       updatedAt: Date.now()
     }
 

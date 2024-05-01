@@ -12,6 +12,8 @@ import session from 'express-session'
 import { default as connectMongoDBSession } from 'connect-mongodb-session'
 import csrf from 'csurf'
 import cookieParser from 'cookie-parser'
+import { createServer } from 'http'
+import { Server } from 'socket.io'
 
 const MongoDBStore = connectMongoDBSession(session)
 const store = new MongoDBStore({
@@ -58,7 +60,34 @@ const START_SERVER = async() => {
   //Middleware
   app.use(errorHandlingMiddleware)
 
-  app.listen(env.LOCAL_PORT, env.LOCAL_HOST, () => {
+  //Config Socket IO
+  const httpServer = createServer(app)
+  const io = new Server(
+    httpServer,
+    {
+      cors: {
+        origin: ['http://localhost:3000', 'http://localhost:3001'],
+        methods: ['GET', 'POST']
+      }
+    }
+  )
+
+  io.on('connection', (socket) => {
+    socket.on('join-room', (data) => {
+      socket.leaveAll()
+      socket.join(data)
+    })
+
+    socket.on('send-message', (data) => {
+      socket.to(data.roomId).emit('response-message', data)
+    })
+
+    socket.on('disconnect', () => {
+      console.log('disconnect')
+    })
+  })
+
+  httpServer.listen(env.LOCAL_PORT, env.LOCAL_HOST, () => {
     // console.log(await GET_DATABASE().listCollections().toArray())
     console.log(`Running server at http://${ env.LOCAL_HOST }:${ env.LOCAL_PORT }/`)
   })
