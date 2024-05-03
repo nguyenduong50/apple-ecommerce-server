@@ -74,9 +74,36 @@ const START_SERVER = async() => {
 
   io.on('connection', (socket) => {
     socket.on('join-room', (data) => {
-      socket.leaveAll()
+      socket.leave(socket.id)
       socket.join(data)
+      console.log('join-room')
+      // const rooms = Array.from(socket.rooms)
+      // console.log(rooms)
+      // if (!roomSockets[room]) {
+      //   roomSockets[room] = [];
+      // }
+      // roomSockets[room].push(socket.id);
+      // console.log(`User ${socket.id} joined room: ${room}`);
+      // // Log all rooms and their occupants
+      // console.log("Rooms and their occupants:", roomSockets);
     })
+
+    socket.on('leave-room', (room) => {
+      socket.leave(room)
+      console.log('leave-room')
+      // const rooms = Array.from(socket.rooms)
+      // console.log(rooms)
+    })
+
+    // socket.on('leaveAllRooms', () => {
+    //   const rooms = Object.keys(socket.rooms);
+    //   rooms.forEach((room) => {
+    //       if (room !== socket.id) { // Exclude the socket's own room
+    //           socket.leave(room);
+    //           console.log(`User ${socket.id} left room: ${room}`);
+    //       }
+    //   });
+    // });
 
     socket.on('send-message', (data) => {
       socket.to(data.roomId).emit('response-message', data)
