@@ -1,9 +1,11 @@
 import express from 'express'
+import csrf from 'csurf'
 import { productValidation } from '~/validations/productValidation'
 import { productController } from '~/controllers/productController'
 import { uploadImage, imagesMiddleware } from '~/middlewares/imagesMiddleware'
 
 const Router = express.Router()
+const csrfProtection = csrf()
 
 Router.route('/')
   .get(productController.getList)
@@ -11,7 +13,7 @@ Router.route('/')
 
 Router.route('/:id')
   .get(productController.getDetails)
-  .put(productValidation.update, productController.update)
+  .put(csrfProtection, productValidation.update, productController.update)
   .delete(productController.deleteProduct)
 
 export const productRoute = Router

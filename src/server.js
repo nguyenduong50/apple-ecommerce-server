@@ -52,6 +52,9 @@ const START_SERVER = async() => {
 
   //CSRF
   // app.use(csrfProtection)
+  app.get('/form', csrfProtection, function (req, res) {
+    res.send({ csrfToken: req.csrfToken() })
+  })
 
   //Router
   app.use('/v1', APIs_V1)
@@ -71,45 +74,34 @@ const START_SERVER = async() => {
       }
     }
   )
-
+  let listUserOnline = []
   io.on('connection', (socket) => {
-    socket.on('join-room', (data) => {
-      socket.leave(socket.id)
-      socket.join(data)
-      console.log('join-room')
-      // const rooms = Array.from(socket.rooms)
-      // console.log(rooms)
-      // if (!roomSockets[room]) {
-      //   roomSockets[room] = [];
-      // }
-      // roomSockets[room].push(socket.id);
-      // console.log(`User ${socket.id} joined room: ${room}`);
-      // // Log all rooms and their occupants
-      // console.log("Rooms and their occupants:", roomSockets);
+    socket.on('add-user-online', (data) => {
+      const isExistedUser = listUserOnline.find(user => user._id === data._id)
+      if (!isExistedUser) {
+        listUserOnline.push({
+          ...data,
+          socketId: socket.id
+        })
+      }
+      io.emit('user-online', listUserOnline)
     })
 
-    socket.on('leave-room', (room) => {
-      socket.leave(room)
-      console.log('leave-room')
-      // const rooms = Array.from(socket.rooms)
-      // console.log(rooms)
+    socket.on('remove-user-online', (data) => {
+      listUserOnline = listUserOnline.filter(user => user._id !== data._id)
+      io.emit('user-online', listUserOnline)
     })
-
-    // socket.on('leaveAllRooms', () => {
-    //   const rooms = Object.keys(socket.rooms);
-    //   rooms.forEach((room) => {
-    //       if (room !== socket.id) { // Exclude the socket's own room
-    //           socket.leave(room);
-    //           console.log(`User ${socket.id} left room: ${room}`);
-    //       }
-    //   });
-    // });
 
     socket.on('send-message', (data) => {
-      socket.to(data.roomId).emit('response-message', data)
+      const user = listUserOnline.find(user => user._id === data.userId)
+      if (user) {
+        io.emit('get-message', data)
+      }
     })
 
     socket.on('disconnect', () => {
+      // listUserOnline = listUserOnline.filter(user => user.socketId !== socket.id)
+      // io.emit('user-online', listUserOnline)
       console.log('disconnect')
     })
   })
