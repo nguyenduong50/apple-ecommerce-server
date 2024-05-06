@@ -69,7 +69,7 @@ const START_SERVER = async() => {
     httpServer,
     {
       cors: {
-        origin: ['apple-ecommerce-admin.vercel.app', 'http://localhost:3000', 'http://localhost:3001'],
+        origin: ['https://apple-ecommerce-admin.vercel.app/', 'http://localhost:3000', 'http://localhost:3001'],
         methods: ['GET', 'POST']
       }
     }
