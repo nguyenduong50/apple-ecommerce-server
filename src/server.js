@@ -106,10 +106,16 @@ const START_SERVER = async() => {
     })
   })
 
-  httpServer.listen(env.LOCAL_PORT, env.LOCAL_HOST, () => {
-    // console.log(await GET_DATABASE().listCollections().toArray())
-    console.log(`Running server at http://${ env.LOCAL_HOST }:${ env.LOCAL_PORT }/`)
-  })
+  if (env.BUILD_MODE === 'production') {
+    httpServer.listen(process.env.PORT, () => {
+      console.log(`Running server Production at ${process.env.PORT}`)
+    })
+  }
+  else {
+    httpServer.listen(env.LOCAL_PORT, env.LOCAL_HOST, () => {
+      console.log(`Running server at http://${ env.LOCAL_HOST }:${ env.LOCAL_PORT }/`)
+    })
+  }
 
   exitHook(() => {
     console.log('Close connect Database')
