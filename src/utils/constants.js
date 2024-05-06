@@ -1,5 +1,6 @@
 export const WHITELIST_DOMAINS = [
   'https://apple-ecommerce-admin.vercel.app',
+  'https://apple-ecommerce-client.web.app/',
   'http://localhost:3001',
   'http://localhost:3000'
 ]
