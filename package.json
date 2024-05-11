@@ -19,6 +19,7 @@
     "@babel/runtime": "^7.22.10",
     "async-exit-hook": "^2.0.1",
     "bcryptjs": "^2.4.3",
+    "cloudinary": "^2.2.0",
     "connect-mongodb-session": "^5.0.0",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
