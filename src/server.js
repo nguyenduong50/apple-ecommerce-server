@@ -25,7 +25,7 @@ const csrfProtection = csrf()
 
 const START_SERVER = async() => {
   const app = express()
-  app.use(express.static(path.join(__dirname, 'public')));
+  app.use(express.static(path.join('/', 'public')));
 
   //Enable request body json data
   app.use(express.json())
