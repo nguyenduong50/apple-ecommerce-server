@@ -14,6 +14,7 @@ import csrf from 'csurf'
 import cookieParser from 'cookie-parser'
 import { createServer } from 'http'
 import { Server } from 'socket.io'
+import path from 'path'
 
 const MongoDBStore = connectMongoDBSession(session)
 const store = new MongoDBStore({
@@ -24,6 +25,7 @@ const csrfProtection = csrf()
 
 const START_SERVER = async() => {
   const app = express()
+  app.use(express.static(path.join(__dirname, 'public')));
 
   //Enable request body json data
   app.use(express.json())
