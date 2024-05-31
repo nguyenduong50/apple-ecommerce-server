@@ -3,13 +3,16 @@ import { env } from './environment'
 
 let database_instance = null
 
-const mongoClientInstance = new MongoClient(env.MONGODB_URI, {
-  serverApi: {
-    version: ServerApiVersion.v1,
-    strict: true,
-    deprecationErrors: true
+const mongoClientInstance = new MongoClient(
+  env.MONGODB_URI, 
+  {
+    serverApi: {
+      version: ServerApiVersion.v1,
+      strict: true,
+      deprecationErrors: true
+    }
   }
-})
+)
 
 export const CONNECT_DATABASE = async() => {
   await mongoClientInstance.connect()

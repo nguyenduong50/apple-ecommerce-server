@@ -14,7 +14,6 @@ import csrf from 'csurf'
 import cookieParser from 'cookie-parser'
 import { createServer } from 'http'
 import { Server } from 'socket.io'
-import path from 'path'
 
 const MongoDBStore = connectMongoDBSession(session)
 const store = new MongoDBStore({
@@ -25,7 +24,6 @@ const csrfProtection = csrf()
 
 const START_SERVER = async() => {
   const app = express()
-  app.use(express.static(path.join('/', 'public')));
 
   //Enable request body json data
   app.use(express.json())
@@ -71,7 +69,12 @@ const START_SERVER = async() => {
     httpServer,
     {
       cors: {
-        origin: ['https://apple-ecommerce-admin.vercel.app', 'https://apple-ecommerce-client.web.app', 'http://localhost:3000', 'http://localhost:3001'],
+        origin: [
+          'https://apple-ecommerce-admin.vercel.app', 
+          'https://apple-ecommerce-client.web.app', 
+          'http://localhost:3000', 
+          'http://localhost:3001'
+        ],
         methods: ['GET', 'POST']
       }
     }
@@ -108,14 +111,15 @@ const START_SERVER = async() => {
     })
   })
 
+  if (env.BUILD_MODE === 'development') {
+    httpServer.listen(process.env.PORT, () => {
+      console.log(`Running server Development at ${process.env.PORT}`)
+    })
+  }
+
   if (env.BUILD_MODE === 'production') {
     httpServer.listen(process.env.PORT, () => {
       console.log(`Running server Production at ${process.env.PORT}`)
-    })
-  }
-  else {
-    httpServer.listen(env.LOCAL_PORT, env.LOCAL_HOST, () => {
-      console.log(`Running server at http://${ env.LOCAL_HOST }:${ env.LOCAL_PORT }/`)
     })
   }
 
