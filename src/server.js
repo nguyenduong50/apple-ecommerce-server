@@ -113,13 +113,13 @@ const START_SERVER = async() => {
 
   if (env.BUILD_MODE === 'development') {
     httpServer.listen(process.env.PORT, () => {
-      console.log(`Running server Development at ${process.env.PORT}`)
+      console.log(`Running server Development at port ${process.env.PORT}`)
     })
   }
 
   if (env.BUILD_MODE === 'production') {
     httpServer.listen(process.env.PORT, () => {
-      console.log(`Running server Production at ${process.env.PORT}`)
+      console.log(`Running server Production at port ${process.env.PORT}`)
     })
   }
 
